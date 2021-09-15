@@ -1,7 +1,7 @@
 # spring-boot-movie-challenge
 Backend challenge. Spring boot API appication for handle the movie information.
 
-##EndPoints
+## EndPoints
 
 * [POST] /load/movies
 * [POST] /load/ratings
