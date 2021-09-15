@@ -67,7 +67,6 @@ public class MovieSaverMovieFromString implements Callable<Integer> {
                         return dataLoaded;
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
                     log.error("Error loading movie data to movie list , Exception: {}", e.toString());
                 }
             }

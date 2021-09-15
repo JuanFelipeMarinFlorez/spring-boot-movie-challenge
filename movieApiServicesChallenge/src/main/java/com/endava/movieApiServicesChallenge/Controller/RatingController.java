@@ -47,6 +47,12 @@ public class RatingController {
 
     }
 
+    @ApiOperation(value = "Find the rating from a specific movie", response = Resource.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successfully found and calculate the rating"),
+            @ApiResponse(code = 400, message = "Movie could not found"),
+            @ApiResponse(code = 204, message = "The movie has no rating specified"),
+    })
     @GetMapping("/movie/{id}/rating")
     public ResponseEntity<String>findMovieRating(@PathVariable("id") int id){
         try{

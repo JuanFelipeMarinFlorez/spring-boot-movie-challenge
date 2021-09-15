@@ -61,7 +61,11 @@ public class MovieController {
     }
     }
 
-    @GetMapping("/movies/")
+    @ApiOperation(value = "Find a movie with filter atributes  ", response = ResponseEntity.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successfully found the search with filter"),
+            @ApiResponse(code = 204, message = "Could not find movies that match with the filter"),
+    })@GetMapping("/movies/")
     public ResponseEntity<Map<String, Object>> getAllMovies(
             @RequestParam() int page,
             @RequestParam(required = false, defaultValue = "false") boolean adult,
@@ -75,7 +79,6 @@ public class MovieController {
             return this.movieService.getMovies(movieConsult);
         }catch(Exception e){
             log.info("Error getting movies, with exception:"+e.toString());
-            e.printStackTrace();
             return new ResponseEntity<Map<String,Object>>((Map<String, Object>) null,HttpStatus.NO_CONTENT);
 
         }
