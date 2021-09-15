@@ -1,11 +1,10 @@
 package com.endava.movieApiServicesChallenge.Controller;
 
-import com.endava.movieApiServicesChallenge.Model.Movie;
-import com.endava.movieApiServicesChallenge.Service.MovieService;
+import com.endava.movieApiServicesChallenge.Model.MovieConsult;
+import com.endava.movieApiServicesChallenge.Service.MovieServices.MovieService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
-import javax.websocket.server.PathParam;
 import java.util.Map;
 
 @RestController
@@ -25,7 +22,7 @@ public class MovieController {
     private final MovieService movieService;
 
     @Autowired
-    public MovieController(MovieService movieService) {
+    public MovieController( MovieService movieService) {
         this.movieService = movieService;
     }
 
@@ -53,31 +50,33 @@ public class MovieController {
     @ApiOperation(value = "Find a movie with an id passed by parameter  ", response = ResponseEntity.class)
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Successfully found the Movie"),
-            @ApiResponse(code = 404, message = "Could not find the movie"),
+            @ApiResponse(code = 204, message = "Could not find the movie"),
     })@GetMapping("/movie/{id}")
     public ResponseEntity<String> getMovieById(@PathVariable("id") int id){
     try{
         return new ResponseEntity<String>(this.movieService.getMovieById(id).get().toString(), HttpStatus.OK);
 
     }catch(Exception e){
-        return new ResponseEntity<String>("Cannot find the movie with id:"+id,HttpStatus.NOT_FOUND);
+        return new ResponseEntity<String>("Cannot find the movie with id:"+id,HttpStatus.NO_CONTENT);
     }
     }
 
     @GetMapping("/movies/")
     public ResponseEntity<Map<String, Object>> getAllMovies(
             @RequestParam() int page,
-            @RequestParam(required = false) boolean adult,
+            @RequestParam(required = false, defaultValue = "false") boolean adult,
             @RequestParam(required = false) String genres,
             @RequestParam(required = false) String title,
-            @RequestParam(defaultValue = "100") int limit){
+            @RequestParam(defaultValue = "100") int limit
+            ){
 
         try{
-            return this.movieService.getMovies(page,adult,genres,title,limit);
+            MovieConsult movieConsult= new MovieConsult(page,adult,genres,title,limit);
+            return this.movieService.getMovies(movieConsult);
         }catch(Exception e){
             log.info("Error getting movies, with exception:"+e.toString());
             e.printStackTrace();
-            return new ResponseEntity<Map<String,Object>>((Map<String, Object>) null,HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Map<String,Object>>((Map<String, Object>) null,HttpStatus.NO_CONTENT);
 
         }
 

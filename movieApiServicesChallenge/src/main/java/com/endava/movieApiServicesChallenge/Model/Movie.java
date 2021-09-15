@@ -29,6 +29,7 @@ public class Movie {
     private String originalTitle;
     private String overView;
     private String originalLanguage;
+    private boolean adult;
     private List<String> genres;
 
 

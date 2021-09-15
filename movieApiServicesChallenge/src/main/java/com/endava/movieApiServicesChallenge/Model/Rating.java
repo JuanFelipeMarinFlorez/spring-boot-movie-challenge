@@ -18,6 +18,6 @@ public class Rating {
     private int userId;
     private int movieId;
     private float rating;
-    private Timestamp timestamp;
+    private String timestamp;
 
 }

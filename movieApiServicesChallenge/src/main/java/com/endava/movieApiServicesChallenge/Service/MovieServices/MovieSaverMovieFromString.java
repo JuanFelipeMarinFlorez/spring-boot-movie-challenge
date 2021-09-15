@@ -1,20 +1,21 @@
-package com.endava.movieApiServicesChallenge.Service;
+package com.endava.movieApiServicesChallenge.Service.MovieServices;
 
 import com.endava.movieApiServicesChallenge.Model.Movie;
+import com.endava.movieApiServicesChallenge.Model.Rating;
 import com.endava.movieApiServicesChallenge.Repository.MovieRepository;
+import com.endava.movieApiServicesChallenge.Repository.RatingRepository;
+import com.endava.movieApiServicesChallenge.Service.RatingServices.RatingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Component
+@Service
 @Slf4j
 public class MovieSaverMovieFromString implements Callable<Integer> {
     boolean reading=true;
@@ -40,38 +41,34 @@ public class MovieSaverMovieFromString implements Callable<Integer> {
                         Movie movie = new Movie(new ArrayList<String>());
                         String[] dataLine = MovieService.csvData.get(0);
                         try{
-                        movie.setId(Integer.parseInt(dataLine[5]));
-                        movie.setOriginalTitle(dataLine[8]);
-                        movie.setOverView(dataLine[9]);
-                        movie.setOriginalLanguage(dataLine[7]);
-                        movie.setGenresFromString(dataLine[3]);
-                        MovieService.movies.add(movie);
-                        MovieService.csvData.remove(0);
-                        dataLoaded++;
+                            movie.setAdult(Boolean.getBoolean(dataLine[0]));
+                            movie.setId(Integer.parseInt(dataLine[5]));
+                            movie.setOriginalTitle(dataLine[8]);
+                            movie.setOverView(dataLine[9]);
+                            movie.setOriginalLanguage(dataLine[7]);
+                            movie.setGenresFromString(dataLine[3]);
+                            MovieService.movies.add(movie);
+                            MovieService.csvData.remove(0);
+                            dataLoaded++;
                         }
                         catch(Exception e){
                             MovieService.csvData.remove(0);
-                            log.info("Problem saving {}, with exception:{} ", dataLine, e.toString());
+                            log.error("Problem saving {}, with exception:{} ", dataLine, e.toString());
                         }
                     }
-
-                    log.info("Size removed {}", MovieService.movies.size());
-                    List<Movie> newMovies=new ArrayList<>();
-                    newMovies.addAll(MovieService.movies);
-                    ExecutorService es = Executors.newSingleThreadExecutor();
-                    es.submit(new Thread(new DataBaseThread(newMovies,this.movieRepository)));
-                    es.shutdown();
+                    List<Movie> newRatings=new ArrayList<>();
+                    newRatings.addAll(MovieService.movies);
+                    ExecutorService es =Executors.newSingleThreadExecutor();
+                    es.submit(() -> this.movieRepository.saveAll(newRatings));
                     MovieService.movies.clear();
                     MovieService.csvData.notify();
-
-                    log.info("Size removed cleared{}", MovieService.movies.size());
-
                     if(!MovieService.csvReading){
                         reading=false;
                         return dataLoaded;
                     }
                 } catch (Exception e) {
-                    log.info("Error loading movie data to movie list , Exception: {}", e.toString());
+                    e.printStackTrace();
+                    log.error("Error loading movie data to movie list , Exception: {}", e.toString());
                 }
             }
         }

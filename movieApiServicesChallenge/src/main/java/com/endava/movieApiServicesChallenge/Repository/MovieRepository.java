@@ -14,6 +14,13 @@ public interface MovieRepository extends MongoRepository<Movie, Integer> {
 
      Page<Movie> findAll(Pageable pageable);
 
-     @Query(value= "{ genres : ?0 }")
-     Page<Movie> findByGenre(String genres, Pageable pageable);
+     @Query(value= "{ genres : { $all :?0 } }")
+     Page<Movie> findByGenre(String[] genres, Pageable pageable);
+
+     Page<Movie> findMovieByOriginalTitle(String name, Pageable pageable);
+
+     Page<Movie> findMovieByAdult(boolean adult, Pageable pageable);
+
+     @Query("{ '$and' :[{'genres' : { '$all' :?0 }} , {'originalTitle' : ?1 }, {'adult': ?2}] }")
+     Page<Movie> findByGenreAndAdultAndOriginalLanguage(String[] genres,String name, boolean adult, Pageable pageable);
 }
