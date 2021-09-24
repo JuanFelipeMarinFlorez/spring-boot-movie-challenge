@@ -29,6 +29,9 @@ public class Movie {
     private String originalTitle;
     private String overView;
     private String originalLanguage;
+    private int year;//14
+    private float popularity;//10
+    private float runtime; //16
     private boolean adult;
     private List<String> genres;
 

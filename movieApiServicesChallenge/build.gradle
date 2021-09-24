@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.endava'
-version = '0.0.1-SNAPSHOT'
+version = '0.1.0-SNAPSHOT'
 sourceCompatibility = '1.8'
 
 configurations {
@@ -27,8 +27,11 @@ dependencies {
 	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '3.0.0'
 	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'
 	implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
+    implementation 'junit:junit:4.13.1'
+	implementation 'junit:junit:4.13.1'
+    implementation 'com.google.code.gson:gson:2.8.8'
 
-	compileOnly 'org.projectlombok:lombok:1.18.20'
+    compileOnly 'org.projectlombok:lombok:1.18.20'
 	annotationProcessor 'org.projectlombok:lombok:1.18.20'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test:2.5.4'
 }

@@ -47,6 +47,9 @@ public class MovieSaverMovieFromString implements Callable<Integer> {
                             movie.setOverView(dataLine[9]);
                             movie.setOriginalLanguage(dataLine[7]);
                             movie.setGenresFromString(dataLine[3]);
+                            movie.setYear(Integer.parseInt(dataLine[14].split("-")[0]));
+                            movie.setPopularity(Float.parseFloat(dataLine[10]));
+                            movie.setRuntime(Float.parseFloat(dataLine[16]));
                             MovieService.movies.add(movie);
                             MovieService.csvData.remove(0);
                             dataLoaded++;
