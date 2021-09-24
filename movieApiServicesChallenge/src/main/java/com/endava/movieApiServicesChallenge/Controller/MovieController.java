@@ -60,7 +60,7 @@ public class MovieController {
         return new ResponseEntity<String>(this.movieService.getMovieById(id), HttpStatus.OK);
 
     }catch(Exception e){
-        return new ResponseEntity<String>("Cannot find the movie with id:"+id,HttpStatus.NO_CONTENT);
+        return new ResponseEntity<String>("Cannot find the movie with id:"+id,HttpStatus.BAD_REQUEST);
     }
     }
 
@@ -117,6 +117,24 @@ public class MovieController {
         try{
             MovieConsult movieConsult= new MovieConsult(page,adult,genres,title,limit);
             return this.movieService.getMoviesSortedByPopularity(movieConsult);
+        }catch(Exception e){
+            log.info("Error getting movies, with exception:"+e.toString());
+            return new ResponseEntity<Object>((Map<String, Object>) null,HttpStatus.NO_CONTENT);
+        }
+    }
+
+    @CrossOrigin(origins="*",methods = {RequestMethod.GET,RequestMethod.POST})
+    @GetMapping("/movies/title/")
+    public ResponseEntity<Object> getMoviesByTitle(
+            @RequestParam() int page,
+            @RequestParam(required = false, defaultValue = "false") boolean adult,
+            @RequestParam(required = false) String genres,
+            @RequestParam(required = false) String title,
+            @RequestParam(defaultValue = "100") int limit
+    ){
+        try{
+            MovieConsult movieConsult= new MovieConsult(page,adult,genres,title,limit);
+            return this.movieService.getMoviesByTitle(movieConsult);
         }catch(Exception e){
             log.info("Error getting movies, with exception:"+e.toString());
             return new ResponseEntity<Object>((Map<String, Object>) null,HttpStatus.NO_CONTENT);

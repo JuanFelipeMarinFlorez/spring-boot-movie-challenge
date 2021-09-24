@@ -163,4 +163,33 @@ public class MovieService {
 
     }
 
+    public ResponseEntity<Object> getMoviesByTitle(MovieConsult movieConsult)
+    {
+        try {
+            List<Movie> movies = new ArrayList<Movie>();
+            Pageable paging = PageRequest.of(movieConsult.getPage(), movieConsult.getLimit(), Sort.by("popularity").descending());
+
+            Page<Movie> pageTuts = null;
+
+            pageTuts=this.movieRepository.findMovieByOriginalTitle(movieConsult.getTitle(), paging);
+
+            movies = pageTuts.getContent();
+            HttpStatus status=null;
+            if(movies.isEmpty()){
+                status= HttpStatus.NOT_FOUND;
+            }else{
+                status= HttpStatus.OK;
+            }
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("Movies", movies);
+
+            return new ResponseEntity<>(movies,status);
+        } catch (Exception e) {
+            log.error("Cannot get movies "+e.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
 }
